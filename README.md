@@ -1,16 +1,18 @@
-# Thực hành giao tiếp IoT bằng CoAP với Python
 
+## Thành viên nhóm
+
+| Mã sinh viên | Họ và tên |
+|---|---|
+| B23DCCN365 | Hoàng Khải Hưng |
+| B22DCCN072 | Thào A Bảy |
+| B23DCCN055 | Trịnh Quang Anh |
+
+---
+
+# Thực hành giao tiếp IoT bằng CoAP với Python
 Tài liệu hướng dẫn chạy và mô tả kết quả của 3 bài thực hành sử dụng giao thức **CoAP** (`aiocoap`) trên Python.
 
-## Mục lục
 
-- [Giới thiệu](#giới-thiệu)
-- [Danh sách tệp](#danh-sách-tệp)
-- [Yêu cầu](#yêu-cầu)
-- [Bài 1: Gửi và nhận thông điệp bằng CoAP](#bài-1-gửi-và-nhận-thông-điệp-bằng-coap)
-- [Bài 2: Giám sát cảm biến nhiệt độ và độ ẩm](#bài-2-giám-sát-cảm-biến-nhiệt-độ-và-độ-ẩm)
-- [Bài 3: Giám sát và điều khiển đèn thông minh bằng CoAP Observe](#bài-3-giám-sát-và-điều-khiển-đèn-thông-minh-bằng-coap-observe)
-- [Lưu ý khi chạy](#lưu-ý-khi-chạy)
 
 ## Giới thiệu
 
@@ -33,18 +35,17 @@ Dự án mô phỏng một số chức năng IoT bằng giao thức CoAP qua UDP
 | `critical_consumer_bai3.py` | Bài 3 — Light Monitoring Client (Observe) |
 | `all_alert_consumer_bai3.py` | Mở rộng — một client Observe khác, có ghi log |
 
-> Các lệnh bên dưới giả định bạn đang ở thư mục gốc của dự án. Nếu tên hoặc vị trí tệp trong thư mục thực tế khác, hãy điều chỉnh đường dẫn tương ứng.
 
 ## Yêu cầu
 
 - Python 3.
-- Thư viện `aiocoap`.
-- Môi trường ảo Python `.venv` được tạo và cài đặt các thư viện cần thiết.
-
-Nếu chưa cài thư viện trong môi trường ảo, có thể kích hoạt môi trường rồi cài `aiocoap`:
-
-```powershell
+- Cài môi trường ảo Python `.venv` và kích hoạt môi trường ảo:
+```bash
+python -m venv .venv
 .\.venv\Scripts\Activate.ps1
+```
+- Cài thư viện`aiocoap` trong môi trường ảo :
+```bash
 python -m pip install aiocoap
 ```
 
@@ -53,17 +54,13 @@ python -m pip install aiocoap
 ### Cách chạy
 
 Mở **hai terminal** tại thư mục dự án sau khi kích hoạt môi trường ảo.
-
 **Terminal 1 — Server**
-
-```powershell
-python ".\consumer_bai1.py"
+```bash
+python bai1/consumer_bai1.py
 ```
-
 **Terminal 2 — Client**
-
-```powershell
-python ".\producer_bai1.py"
+```bash
+python bai1/producer_bai1.py
 ```
 
 ### Cách hoạt động
@@ -121,7 +118,6 @@ Nội dung log trên được giữ theo lần chạy thực tế, bao gồm c�
 - Xử lý lỗi kết nối hoặc timeout sau 8 giây không nhận phản hồi.
 - Cho phép Client tiếp tục gửi yêu cầu sau khi gặp lỗi giao tiếp.
 
-**Lưu ý:** Thông điệp được lưu trong RAM và mất khi Server khởi động lại. Khi Server không hoạt động, hệ điều hành có thể báo lỗi kết nối ngay; timeout xảy ra khi Client không nhận được phản hồi trong 8 giây.
 
 ## Bài 2: Giám sát cảm biến nhiệt độ và độ ẩm
 
@@ -130,15 +126,13 @@ Nội dung log trên được giữ theo lần chạy thực tế, bao gồm c�
 Mở hai terminal tại thư mục dự án.
 
 **Terminal 1 — Sensor Server**
-
-```powershell
-.\.venv\Scripts\python.exe ".\sensor_producer_bai2.py"
+```bash
+python bai2/sensor_producer_bai2.py
 ```
 
 **Terminal 2 — Monitoring Client**
-
-```powershell
-.\.venv\Scripts\python.exe ".\monitor_consumer_bai2.py"
+```bash
+python bai3/monitor_consumer_bai2.py
 ```
 
 Client cho phép chọn cảm biến bằng cách nhập `sensor01`, `sensor02` hoặc `sensor03`. Nhấn Enter để chọn mặc định `sensor01`. Trong log minh chứng, Client giám sát `sensor03`.
@@ -214,26 +208,21 @@ Dữ liệu Client nhận được khớp với dữ liệu Server tạo tại c
 
 Cần mở **ba cửa sổ Terminal độc lập**. Kích hoạt môi trường ảo `.venv`, sau đó khởi chạy theo đúng thứ tự.
 
-**Bước 1 — Khởi động CoAP Server**
-
+**Terminal 1 — Khởi động CoAP Server**
 ```bash
 python bai3/alert_producer_bai3.py
 ```
 
-**Bước 2 — Khởi động Client giám sát (Observe)**
-
+**Terminal 2 — Khởi động Client giám sát (Observe)**
 ```bash
 python bai3/critical_consumer_bai3.py
 ```
-
 Nhập mã thiết bị muốn theo dõi khi được yêu cầu.
 
-**Bước 3 — Khởi động Client điều khiển (Controller)**
-
+**Terminal 3 — Khởi động Client điều khiển (Controller)**
 ```bash
 python bai3/warning_consumer_bai3.py
 ```
-
 Nhập mã thiết bị muốn điều khiển khi được yêu cầu.
 
 ### Thông số và URI
