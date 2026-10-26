@@ -22,19 +22,6 @@ Dự án mô phỏng một số chức năng IoT bằng giao thức CoAP qua UDP
 2. Giám sát dữ liệu nhiệt độ, độ ẩm của nhiều cảm biến.
 3. Điều khiển trạng thái đèn thông minh và nhận cập nhật tự động bằng CoAP Observe.
 
-## Danh sách tệp
-
-| Tệp | Vai trò |
-|---|---|
-| `consumer_bai1.py` | Bài 1 — CoAP Server GET/POST |
-| `producer_bai1.py` | Bài 1 — CoAP Client GET rồi POST |
-| `sensor_producer_bai2.py` | Bài 2 — Sensor CoAP Server |
-| `monitor_consumer_bai2.py` | Bài 2 — Monitoring CoAP Client |
-| `alert_producer_bai3.py` | Bài 3 — Smart Light CoAP Server |
-| `warning_consumer_bai3.py` | Bài 3 — Light Controller Client |
-| `critical_consumer_bai3.py` | Bài 3 — Light Monitoring Client (Observe) |
-| `all_alert_consumer_bai3.py` | Mở rộng — một client Observe khác, có ghi log |
-
 
 ## Yêu cầu
 
