@@ -135,72 +135,73 @@ python bai2/sensor_producer_bai2.py
 python bai3/monitor_consumer_bai2.py
 ```
 
-Client cho phép chọn cảm biến bằng cách nhập `sensor01`, `sensor02` hoặc `sensor03`. Nhấn Enter để chọn mặc định `sensor01`. Trong log minh chứng, Client giám sát `sensor03`.
+Client yêu cầu chọn thiết bị:
 
-Nhấn `Ctrl+C` để dừng chương trình. Muốn đổi cảm biến, chạy lại Client và chọn mã khác.
-
-### Thông số giao tiếp
-
-- **Giao thức:** CoAP qua UDP.
-- **Địa chỉ IP:** `127.0.0.1`.
-- **Cổng:** `5683`.
-- **Phương thức truy vấn:** GET.
-- **Định dạng dữ liệu:** JSON, Content-Format `50`.
-- **Chu kỳ cập nhật dữ liệu:** 3 giây.
-
-| Thiết bị | URI |
-|---|---|
-| `sensor01` | `coap://127.0.0.1:5683/iot/lab/sensor01/data` |
-| `sensor02` | `coap://127.0.0.1:5683/iot/lab/sensor02/data` |
-| `sensor03` | `coap://127.0.0.1:5683/iot/lab/sensor03/data` |
-
-### Chức năng
-
-- Mô phỏng ba cảm biến nhiệt độ và độ ẩm.
-- Tự động cập nhật dữ liệu cảm biến mỗi 3 giây.
-- Thêm `timestamp` vào JSON để ghi nhận thời điểm tạo mẫu.
-- Cho phép Client chọn mã thiết bị cần giám sát.
-- Client gửi GET định kỳ, phân tích và hiển thị dữ liệu.
-- Cảnh báo khi nhiệt độ **> 35°C** hoặc độ ẩm **< 40%**.
-- Ghi nối tiếp dữ liệu nhận được vào CSV trong thư mục `logs`.
-- Đếm số lần GET và tính thời gian phản hồi trung bình.
-
-### Ví dụ dữ liệu JSON
-
-```json
-{
-  "device_id": "sensor03",
-  "temperature": 30.7,
-  "humidity": 68.9,
-  "timestamp": "2026-10-26T09:23:59+07:00"
-}
+```text
+Các cảm biến: sensor01, sensor02, sensor03
+Nhập mã thiết bị cần giám sát [Enter = sensor01]: sensor03
 ```
 
-### Kết quả chạy thực tế
+Nhập mã cảm biến cần giám sát; Enter chọn mặc định `sensor01`. Nhập sai sẽ được yêu cầu nhập lại. Muốn đổi thiết bị, nhấn `Ctrl+C`, chạy lại Client và chọn mã khác.
 
-Trong đoạn log Client từ `09:23:59` đến `09:24:38` ngày `26/10/2026`:
+### 2. IP, cổng và URI
 
-| Chỉ số | Kết quả |
-|---|---:|
-| Thiết bị được giám sát | `sensor03` |
-| Số lần thực hiện GET | 14 |
-| Số phản hồi nhận được | 14 |
-| Tỷ lệ nhận phản hồi trong đoạn log | 100% |
-| Khoảng cách giữa các lần nhận dữ liệu | 3 giây |
-| Thời gian phản hồi trung bình sau lần thứ 14 | 3.580 ms |
-| Thời gian phản hồi nhỏ nhất | 2.150 ms |
-| Thời gian phản hồi lớn nhất | 10.927 ms |
-| Ghi CSV | Client thông báo lưu thành công ở cả 14 lượt |
+- IP: `127.0.0.1`.
+- Cổng: UDP `5683`.
+- Phương thức: GET.
+- Dữ liệu: JSON, Content-Format `50`.
 
-Dữ liệu Client nhận được khớp với dữ liệu Server tạo tại cùng timestamp. Các trường hợp cảnh báo được ghi nhận:
+| Thiết bị | URI |
+| --- | --- |
+| sensor01 | `coap://127.0.0.1:5683/iot/lab/sensor01/data` |
+| sensor02 | `coap://127.0.0.1:5683/iot/lab/sensor02/data` |
+| sensor03 | `coap://127.0.0.1:5683/iot/lab/sensor03/data` |
 
-| Nhiệt độ | Độ ẩm | Kết quả |
-|---:|---:|---|
-| 30.7°C | 68.9% | Bình thường |
-| 20.5°C | 38.8% | Cảnh báo độ ẩm thấp |
-| 35.4°C | 38.1% | Cảnh báo nhiệt độ cao và độ ẩm thấp |
+### 3. Chức năng và kết quả đạt được
 
-> Lưu ý: phần mô tả log gốc có một câu ghi “Nhiệt độ 38.1°C” cho trường hợp cảnh báo nhiệt độ cao, trong khi log minh chứng ghi nhiệt độ `35.4°C` và độ ẩm `38.1%`. Bảng trên sử dụng các giá trị hiển thị trong log minh chứng.
+- Mô phỏng ba cảm biến, cập nhật dữ liệu mỗi 3 giây.
+- Bổ sung `timestamp` trong JSON.
+- Cho phép Client chọn thiết bị và GET dữ liệu định kỳ.
+- Cảnh báo khi nhiệt độ >35°C hoặc độ ẩm <40%.
+- Ghi nối tiếp dữ liệu vào `logs/<mã thiết bị>.csv`.
+- Đếm số GET và tính thời gian phản hồi trung bình.
+- Xử lý lỗi giao tiếp và timeout sau 8 giây.
+
+### 4. Log minh chứng
+
+**Server:**
+
+```text
+Sensor CoAP Server started.
+Resource: coap://127.0.0.1:5683/iot/lab/sensor01/data
+Resource: coap://127.0.0.1:5683/iot/lab/sensor02/data
+Resource: coap://127.0.0.1:5683/iot/lab/sensor03/data
+
+Cập nhật dữ liệu mỗi 3 giây. Ctrl+C để dừng.
+```
+
+**Client — trích log thực tế:**
+
+```text
+[09:24:23] Received sensor data
+
+Device: sensor03
+Temperature: 35.4 C
+Humidity: 38.1 %
+Timestamp: 2026-10-26T09:24:23+07:00
+
+CANH BAO: Nhiet do cao
+CANH BAO: Do am thap
+
+Thời gian phản hồi: 2.173 ms
+Đã lưu dữ liệu vào CSV.
+
+Số lần thực hiện GET: 9
+Số lần nhận phản hồi: 9
+Thời gian phản hồi trung bình: 2.957 ms
+----------------------------------------
+```
+
 
 ## Bài 3: Giám sát và điều khiển đèn thông minh bằng CoAP Observe
 
@@ -294,13 +295,6 @@ Mã phản hồi: 2.04 Changed | Cập nhật thành công light02
 ### Kết quả đạt được
 
 Hệ thống mô phỏng được việc quản lý nhiều đèn, điều khiển trạng thái qua PUT và tự động thông báo cho Client đã đăng ký Observe khi trạng thái thay đổi.
-
-## Lưu ý khi chạy
-
-1. Các bài đều sử dụng UDP cổng `5683`. **Dừng Server của bài khác trước khi chạy bài tiếp theo** để tránh xung đột cổng.
-2. Bài 1 và Bài 2 sử dụng các tệp ở thư mục gốc theo danh sách tệp. Lệnh Bài 3 ở trên giả định các tệp nằm trong thư mục `bai3/`; hãy điều chỉnh nếu cấu trúc dự án thực tế khác.
-3. Thư mục `logs` có thể được tạo hoặc cập nhật trong quá trình chạy, tùy cách triển khai của từng chương trình.
-4. Các kết quả và số liệu trong README là log minh chứng của một lần chạy, không phải cam kết về thời gian phản hồi trong mọi môi trường.
 
 ---
 
