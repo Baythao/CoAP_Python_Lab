@@ -1,0 +1,4 @@
+[2026-10-26 10:19:05] Trạng thái light01 thay đổi: OFF -> ON
+[2026-10-26 10:43:04] Trạng thái light01 thay đổi: OFF -> ON
+[2026-10-26 10:50:36] Trạng thái fan01 thay đổi: OFF -> ON
+[2026-10-26 10:55:37] Trạng thái light01 thay đổi: OFF -> ON
